@@ -12,6 +12,7 @@ Exit Games currently provides two versions of Photon: a cloud based service and 
     ```
         <repo root>
             | .dockerignore
+            | .gitignore
             | ConfigurePhoton.ps1
             | Dockerfile
             | EntryPoint.ps1
@@ -39,9 +40,7 @@ Exit Games currently provides two versions of Photon: a cloud based service and 
     Docker will pull Windows Server Core 1809 from the Microsoft Image Registry `mcr.microsoft.com/windows/servercore:1809` if needed. This may take a while.
 3. Create a custom NAT Docker network to run Photon locally. This only needs to be done once:
     ```
-    docker network create --driver=nat \
-        --subnet=172.24.1.0/24 --gateway=172.24.1.1 \
-        photon-nat
+    docker network create --driver=nat --subnet=172.24.1.0/24 --gateway=172.24.1.1 photon-nat
     ```
 4. Run the container:
     ```
@@ -77,7 +76,7 @@ You will need an active Azure subscription and an [Azure Image Registry](https:/
     ```
     docker tag photon:1.0 <registry login server>/gameserver/photon:1.0
     ```
-1. Login to the registry and push the image. You may be asked to provide `<registry user name>` and `<registry password>`:
+1. Login to the registry and push the image. Provide `<registry user name>` and `<registry password>` if asked:
     ```
     docker login <registry login server>
     docker push <registry login server>/gameserver/photon:1.0
