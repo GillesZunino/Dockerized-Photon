@@ -105,12 +105,17 @@ You will need an active Azure subscription and an [Azure Image Registry](https:/
     ```
     If the Container Instance Group exists, it is updated. Caution: all containers in the group are stopped first.
 
+The previous commands provide `<registry user name>` and `<regsitry password>` on the command line. It is best to store these secrets in [Azure Key Vault](https://docs.microsoft.com/en-us/azure/key-vault/) and retrieve them programatically during deployment. For instance the following command will retrieve the secret `myregsitry-admin-pass` from the Key Vault named `mykeyvault`. For more information, refer to [](https://docs.microsoft.com/en-us/azure/container-instances/container-instances-using-azure-container-registry).
+
+```
+AKV_NAME=mykeyvault
+$(az keyvault secret show --vault-name $AKV_NAME -n myregsitry-admin-pass --query value -o tsv)
+```
+
 
 # TODO
 1. Make TCP work
 2. Photon Performance Counters registration
 3. Collect performance counters and logs with Log Analytics
-4. Cannot use managed identity to login to registry so indicate how to use keyvault to retrieve secrets(s) [KeyVault entry](https://docs.microsoft.com/en-us/azure/container-instances/container-instances-using-azure-container-registry)
-5. Understand versioning in ACI - seems like https://blogs.msdn.microsoft.com/stevelasker/2018/03/01/docker-tagging-best-practices-for-tagging-and-versioning-docker-images/ does niot automatically work
-6. Add a troubleshooting section
-7. Indicate Photon is a product from ExitGames. Add an introduction on why we would want to do this in the first place
+4. Understand versioning in ACI - seems like https://blogs.msdn.microsoft.com/stevelasker/2018/03/01/docker-tagging-best-practices-for-tagging-and-versioning-docker-images/ does niot automatically work
+5. Add a troubleshooting section
