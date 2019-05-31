@@ -66,7 +66,7 @@ Exit Games currently provides two versions of Photon: a cloud based service and 
     Photon Server is now available at `172.24.1.20` (the value passed as `PHOTON_ENDPOINT`) and games can now connect.
 
 ## Deploy to Azure Container Instance
-You will need an active Azure subscription and an [Azure Image Registry](https://docs.microsoft.com/en-us/azure/container-registry/container-registry-get-started-portal) instance. A "Basic" SKU is sufficient. The following steps assume Administrative User access has been enabled. You will need to substitute `<registry login server>`, `<registry user name>` and `<regsitry password>` with actual values for your registry. These can be found under the "Access keys" blade in the Azure portal.
+You will need an active Azure subscription and an [Azure Image Registry](https://docs.microsoft.com/en-us/azure/container-registry/container-registry-get-started-portal) instance. A "Basic" SKU is sufficient. The following steps assume Administrative User access has been enabled. You will need to substitute `<registry login server>`, `<registry user name>` and `<registry password>` with actual values for your registry. These can be found under the "Access keys" blade in the Azure portal.
 
 1. Tag the image with the registry login server. You can either build and tag the image in one step:
     ```
@@ -104,7 +104,7 @@ You will need an active Azure subscription and an [Azure Image Registry](https:/
     ```
     If the Container Instance Group exists, it is updated. Caution: all containers in the group are stopped first.
 
-The previous commands provide `<registry user name>` and `<regsitry password>` on the command line. It is best to store these secrets in [Azure Key Vault](https://docs.microsoft.com/en-us/azure/key-vault/) and retrieve them programatically during deployment. For instance the following command will retrieve the secret `myregsitry-admin-pass` from the Key Vault named `mykeyvault`. For more information, refer to [](https://docs.microsoft.com/en-us/azure/container-instances/container-instances-using-azure-container-registry).
+The previous commands provide `<registry user name>` and `<registry password>` on the command line. It is best to store these secrets in [Azure Key Vault](https://docs.microsoft.com/en-us/azure/key-vault/) and retrieve them programatically during deployment. For instance the following command will retrieve the secret `myregsitry-admin-pass` from the Key Vault named `mykeyvault`. For more information, refer to [](https://docs.microsoft.com/en-us/azure/container-instances/container-instances-using-azure-container-registry).
 
 ```
 AKV_NAME=mykeyvault
