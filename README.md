@@ -86,7 +86,7 @@ You will need an active Azure subscription and an [Azure Image Registry](https:/
     New-AzureRmResourceGroupDeployment `
             -ResourceGroupName <resource group name> `
             -TemplateFile Template\template.json `
-            -imageTag akaregistry.azurecr.io/kaos/photon:1.2 `
+            -imageTag <registry login server>/gameserver/photon:1.0 `
             -containerRegistryServer <registry login server> `
             -containerRegistryUsername <registry user name> `
             -containerRegistryPassword <registry password>
@@ -97,7 +97,7 @@ You will need an active Azure subscription and an [Azure Image Registry](https:/
             --resource-group <resource group name> \
             --template-file Template\template.json \
             --parameters \
-                imageTag=akaregistry.azurecr.io/kaos/photon:1.2 \
+                imageTag=<registry login server>/gameserver/photon:1.0 \
                 containerRegistryServer=<registry login server> \
                 containerRegistryUsername=<registry user name> \
                 containerRegistryPassword=<registry password> 
