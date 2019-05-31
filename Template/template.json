@@ -1,0 +1,134 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "imageTag": {
+            "type": "string",
+            "metadata": {
+                "description": "Path to the Docker image to deploy."
+            }
+        },
+        "containerGroupName": {
+            "defaultValue": "photon",
+            "type": "string",
+            "metadata": {
+                "description": "Name of the container group."
+            }
+        },
+        "dsnLabel": {
+            "defaultValue": "photon",
+            "type": "string",
+            "metadata": {
+                "description": "DNS label of container group."
+            }
+        },
+        "cpuCount": {
+            "defaultValue": 1,
+            "type": "int",
+            "metadata": {
+                "description": "Number of virtual CPUs (1-4)."
+            }
+        },
+        "memoryGiB": {
+            "defaultValue": "1.5",
+            "type": "string",
+            "metadata": {
+                "description": "Memory in GiB (0.5 to 16)."
+            }
+        },
+        "containerRegistryName": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of container registry."
+            }
+        },
+        "containerRegistryPassword": {
+            "type": "securestring",
+            "metadata": {
+                "description": "Password to log in to the container registry."
+            }
+        }
+    },
+    "variables": {
+        "location": "[resourceGroup().location]"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.ContainerInstance/containerGroups",
+            "apiVersion": "2018-04-01",
+            "name": "[parameters('containerGroupName')]",
+            "location":  "[variables('location')]",
+            "properties": {
+                "containers": [
+                    {
+                        "name": "[parameters('containerGroupName')]",
+                        "properties": {
+                            "image": "[parameters('imageTag')]",
+                            "ports": [
+                                {
+                                    "protocol": "TCP",
+                                    "port": 4530
+                                },
+                                {
+                                    "protocol": "TCP",
+                                    "port": 4531
+                                },
+                                {
+                                    "protocol": "UDP",
+                                    "port": 5055
+                                },
+                                {
+                                    "protocol": "UDP",
+                                    "port": 5056
+                                }
+                            ],
+                            "environmentVariables": [
+                                {
+                                    "name": "PHOTON_ENDPOINT",
+                                    "value": "[concat(parameters('containerGroupName'), '.', variables('location'), '.azurecontainer.io')]"
+                                }
+                            ],
+                            "resources": {
+                                "requests": {
+                                    "memoryInGB": "[parameters('memoryGiB')]",
+                                    "cpu": "[parameters('cpuCount')]"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "imageRegistryCredentials": [
+                    {
+                        "server": "[concat(parameters('containerRegistryName'), '.azurecr.io')]",
+                        "username": "[parameters('containerRegistryName')]",
+                        "password": "[parameters('containerRegistryPassword')]"
+                    }
+                ],
+                "restartPolicy": "OnFailure",
+                "ipAddress": {
+                    "ports": [
+                        {
+                            "protocol": "TCP",
+                            "port": 4530
+                        },
+                        {
+                            "protocol": "TCP",
+                            "port": 4531
+                        },
+                        {
+                            "protocol": "UDP",
+                            "port": 5055
+                        },
+                        {
+                            "protocol": "UDP",
+                            "port": 5056
+                        }
+                    ],
+                    "type": "Public",
+                    "dnsNameLabel": "[parameters('dsnLabel')]"
+                },
+                "osType": "Windows"
+            }
+        }
+    ]
+}

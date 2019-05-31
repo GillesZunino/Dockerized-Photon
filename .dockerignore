@@ -1,0 +1,8 @@
+.gitignore
+Dockerfile
+.dockerignore
+LICENSE
+README.md
+*.exe
+.vscode
+Template
