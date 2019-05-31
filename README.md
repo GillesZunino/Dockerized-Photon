@@ -82,8 +82,9 @@ You will need an active Azure subscription and an [Azure Image Registry](https:/
             -ResourceGroupName <resource group name> `
             -TemplateFile Template\template.json `
             -imageTag akaregistry.azurecr.io/kaos/photon:1.2 `
-            -containerRegistryName <registry name> `
-            -containerRegistryPassword=<registry password>
+            -containerRegistryServer <registry login server> `
+            -containerRegistryUsername <registry user name> `
+            -containerRegistryPassword <registry password>
     ```
     or [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest) :
     ```
@@ -92,7 +93,8 @@ You will need an active Azure subscription and an [Azure Image Registry](https:/
             --template-file Template\template.json \
             --parameters \
                 imageTag=akaregistry.azurecr.io/kaos/photon:1.2 \
-                containerRegistryName=<registry name> \
+                containerRegistryServer=<registry login server> \
+                containerRegistryUsername=<registry user name> \
                 containerRegistryPassword=<registry password> 
     ```
     If the Container Instance Group exists, it is updated. Caution: all containers in the group are stopped first.
@@ -105,4 +107,4 @@ You will need an active Azure subscription and an [Azure Image Registry](https:/
 4. Cannot use managed identity to login to registry so indicate how to use keyvault to retrieve secrets(s) [KeyVault entry](https://docs.microsoft.com/en-us/azure/container-instances/container-instances-using-azure-container-registry)
 5. Understand versioning in ACI - seems like https://blogs.msdn.microsoft.com/stevelasker/2018/03/01/docker-tagging-best-practices-for-tagging-and-versioning-docker-images/ does niot automatically work
 6. Add a troubleshooting section
-7. Accept `<registry login server>`, `<registry user name>` and `<regsitry password>` as opposed to constructing the registry login server name
+7. Indicate Photon is a product from ExitGames. Add an introduction on why we would want to do this in the first place

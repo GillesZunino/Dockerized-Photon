@@ -36,10 +36,16 @@
                 "description": "Memory in GiB (0.5 to 16)."
             }
         },
-        "containerRegistryName": {
+        "containerRegistryServer": {
             "type": "string",
             "metadata": {
-                "description": "Name of container registry."
+                "description": "Container Registry Login Server."
+            }
+        },
+        "containerRegistryUsername": {
+            "type": "string",
+            "metadata": {
+                "description": "Container Registry Administrator User Name."
             }
         },
         "containerRegistryPassword": {
@@ -50,7 +56,8 @@
         }
     },
     "variables": {
-        "location": "[resourceGroup().location]"
+        "location": "[resourceGroup().location]",
+        "photonEndpoint": "[replace(parameters('containerRegistryServer'), parameters('containerRegistryUsername'), parameters('containerGroupName'))]"
     },
     "resources": [
         {
@@ -85,7 +92,7 @@
                             "environmentVariables": [
                                 {
                                     "name": "PHOTON_ENDPOINT",
-                                    "value": "[concat(parameters('containerGroupName'), '.', variables('location'), '.azurecontainer.io')]"
+                                    "value": "[variables('photonEndpoint')]"
                                 }
                             ],
                             "resources": {
@@ -99,8 +106,8 @@
                 ],
                 "imageRegistryCredentials": [
                     {
-                        "server": "[concat(parameters('containerRegistryName'), '.azurecr.io')]",
-                        "username": "[parameters('containerRegistryName')]",
+                        "server": "[parameters('containerRegistryServer')]",
+                        "username": "[parameters('containerRegistryUsername')]",
                         "password": "[parameters('containerRegistryPassword')]"
                     }
                 ],
