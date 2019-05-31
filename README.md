@@ -1,4 +1,9 @@
 # Introduction
+Photon is a game networking engine and multiplayer platform developed and licensed by Exit Games. According to the [company's web site](https://www.photonengine.com/), Photon is used by various developers and studios, including Disney, Ubisoft and Oculus.
+
+Exit Games currently provides two versions of Photon: a cloud based service and a self-hosted server. This repo shows one way to run the self hosted server as a Windows Docker container.
+
+**NOTE**: Exit Games Photon is not free software. At the time of writting, Exit Games offers an evaluation version of Photon Self Hosted Server limited to 20 simultaneous users.
 
 ## Setup
 1. Clone this repository in a convenient location, perhaps C:\DockerizedPhoton. We will call this location `<repo root>`,
@@ -20,6 +25,7 @@
             |     | lib
             |     | src-server
             |
+            | LICENSE
             | README.md
     ```
 4. Make sure Docker for Windows is setup for Windows Containers and is running.
