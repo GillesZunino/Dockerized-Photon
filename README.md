@@ -114,7 +114,6 @@ $(az keyvault secret show --vault-name $AKV_NAME -n myregsitry-admin-pass --quer
 
 # TODO
 1. Make TCP work
-2. Photon Performance Counters registration
-3. Collect performance counters and logs with Log Analytics
-4. Understand versioning in ACI - seems like https://blogs.msdn.microsoft.com/stevelasker/2018/03/01/docker-tagging-best-practices-for-tagging-and-versioning-docker-images/ does niot automatically work
-5. Add a troubleshooting section
+2. Collect performance counters and logs with Log Analytics
+3. Understand versioning in ACI - seems like https://blogs.msdn.microsoft.com/stevelasker/2018/03/01/docker-tagging-best-practices-for-tagging-and-versioning-docker-images/ does niot automatically work
+4. Add a troubleshooting section

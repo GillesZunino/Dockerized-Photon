@@ -1,6 +1,9 @@
-function Configure-Photon([string] $configFilePath, [string] $loadBalancerPublicIp)
+function Configure-Photon([string] $configFilePath, [string] $loadBalancerPublicIp, [bool] $enablePerformanceCounters)
 {
     [xml] $config = Get-Configuration $configFilePath
+
+    # Configure Performance Counters
+    $config.SelectSingleNode("//configuration/applicationSettings/Photon.LoadBalancing.Common.CommonSettings/setting[@name='EnablePerformanceCounters']").SelectSingleNode("./value").InnerText = $enablePerformanceCounters
 
     # Configure master IP and game IP
     $config.SelectSingleNode("//configuration/applicationSettings/Photon.LoadBalancing.MasterServer.MasterServerSettings/setting[@name='PublicIPAddress']").SelectSingleNode("./value").InnerText = $loadBalancerPublicIp

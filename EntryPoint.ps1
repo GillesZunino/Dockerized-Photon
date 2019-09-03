@@ -1,5 +1,15 @@
+# Constants - Capture the location of various executables and files
+[bool] $enablePerformanceCounters = $true
+[string] $PhotonSocketServerDirectoryRelativePath = ".\deploy\bin_Win64"
+[string] $PhotonSocketServerExecutableName = "PhotonSocketServer"
+
+# Derived constants - Ready to use paths to various executable and files 
+[string] $PhotonSocketServerExecutableRelativePath = Join-Path -Path $PhotonSocketServerDirectoryRelativePath -ChildPath $PhotonSocketServerExecutableName
+
+
 # Include configuration functions
 . .\ConfigurePhoton.ps1
+
 
 function Resolve-PhotonEndpoint([string] $photonEndpoint, [int] $numberOfRetries, [int] $secondsBetweenRetries)
 {
@@ -65,6 +75,20 @@ function Get-PhotonPublicIp([string] $photonEndpoint)
     return $ip1
 }
 
+function Register-PerformanceCounters([bool] $registerPerformanceCounters)
+{
+    if ($registerPerformanceCounters) {
+        Write-Host "Registering performance counters"
+        $photonSocketServerProcess = Start-Process -FilePath $PhotonSocketServerExecutableRelativePath -ArgumentList "/installCounters" -WorkingDirectory $PhotonSocketServerDirectoryRelativePath -NoNewWindow -Wait -PassThru
+        [int] $photonExitCode = $photonSocketServerProcess.ExitCode
+        if ($photonExitCode -ne 0) {
+            throw "Failed to register performance counters - PhotonSocketServer exited - $photonExitCode"
+        }
+    } else {
+        Write-Host "Skipping performance counters registration"
+    }
+}
+
 ## ----------------------------------------------------------------------------------------------------------------------------
 
 [string] $endpoint = $Env:PHOTON_ENDPOINT
@@ -74,16 +98,19 @@ Write-Host "DNS Name: $endpoint"
 Write-Host "Public IP: $loadBalancerPublicIP"
 
 Write-Host "Configuring Master (Photon.LoadBalancing.dll.config)"
-Configure-Photon ".\deploy\Loadbalancing\Master\bin\Photon.LoadBalancing.dll.config" $loadBalancerPublicIP
+Configure-Photon ".\deploy\Loadbalancing\Master\bin\Photon.LoadBalancing.dll.config" $loadBalancerPublicIP $enablePerformanceCounters
 
 Write-Host "Configuring GameServer (Photon.LoadBalancing.dll.config)"
-Configure-Photon ".\deploy\Loadbalancing\GameServer\bin\Photon.LoadBalancing.dll.config" $loadBalancerPublicIP
+Configure-Photon ".\deploy\Loadbalancing\GameServer\bin\Photon.LoadBalancing.dll.config" $loadBalancerPublicIP $enablePerformanceCounters
+
+# Register Windows performance counters
+Register-PerformanceCounters $enablePerformanceCounters
 
 # Start PhotonSocketServer
 Write-Host "Starting PhotonSocketServer"
 [System.Diagnostics.ProcessStartInfo] $processInfo = New-Object System.Diagnostics.ProcessStartInfo
-$processInfo.WorkingDirectory = ".\deploy\bin_Win64"
-$processInfo.FileName = ".\deploy\bin_Win64\PhotonSocketServer"
+$processInfo.WorkingDirectory = $PhotonSocketServerDirectoryRelativePath
+$processInfo.FileName = $PhotonSocketServerExecutableRelativePath
 $processInfo.Arguments = "/run LoadBalancing"
 $processInfo.RedirectStandardInput = $false
 $processInfo.RedirectStandardOutput = $false
