@@ -1,6 +1,6 @@
 function Configure-Photon([string] $configFilePath, [string] $loadBalancerPublicIp)
 {
-    [xml]$config = Get-Configuration $configFilePath
+    [xml] $config = Get-Configuration $configFilePath
 
     # Configure master IP and game IP
     $config.SelectSingleNode("//configuration/applicationSettings/Photon.LoadBalancing.MasterServer.MasterServerSettings/setting[@name='PublicIPAddress']").SelectSingleNode("./value").InnerText = $loadBalancerPublicIp
@@ -14,7 +14,7 @@ function Configure-Photon([string] $configFilePath, [string] $loadBalancerPublic
 
 function Get-Configuration([string] $configFilePath)
 {
-    [xml]$config = Get-Content -Path $configFilePath
+    [xml] $config = Get-Content -Path $configFilePath
     return $config
 }
 
