@@ -5,9 +5,9 @@ Exit Games currently provides two versions of Photon: a cloud based service and 
 
 **NOTE**: Exit Games Photon is not free software. At the time of writting, Exit Games offers an evaluation version of Photon Self Hosted Server limited to 20 simultaneous users.
 
-## Setup
+# Setup
 1. Clone this repository in a convenient location, perhaps C:\DockerizedPhoton. We will call this location `<repo root>`,
-2. Dowload [ExitGames Photon Server SDK 4.0.29.11263](https://dashboard.photonengine.com/download/photon-server-sdk_v4-0-29-11263.exe) or later. Other versions of Photon Server SDKs are available on the [ExitGames download page](https://www.photonengine.com/en-US/sdks#serverserver) (ExitGames login required),
+2. Download [ExitGames Photon Server SDK 4.0.29.11263](https://dashboard.photonengine.com/download/photon-server-sdk_v4-0-29-11263.exe) or later. Other versions of Photon Server SDKs are available on the [ExitGames download page](https://www.photonengine.com/en-US/sdks#serverserver) (ExitGames login required),
 3. Extract the SDK in a directory called Photon. The directory structure should be as follows:
     ```
         <repo root>
@@ -65,7 +65,7 @@ Exit Games currently provides two versions of Photon: a cloud based service and 
     ```
     Photon Server is now available at `172.24.1.20` (the value passed as `PHOTON_ENDPOINT`) and games can now connect.
 
-## Deploy to Azure Container Instance
+# Deploy to Azure Container Instance
 You will need an active Azure subscription and an [Azure Image Registry](https://docs.microsoft.com/en-us/azure/container-registry/container-registry-get-started-portal) instance. A "Basic" SKU is sufficient. The following steps assume Administrative User access has been enabled. You will need to substitute `<registry login server>`, `<registry user name>` and `<registry password>` with actual values for your registry. These can be found under the "Access keys" blade in the Azure portal.
 
 1. Tag the image with the registry login server. You can either build and tag the image in one step:
