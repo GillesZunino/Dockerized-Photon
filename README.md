@@ -114,9 +114,9 @@ $(az keyvault secret show --vault-name $AKV_NAME -n myregsitry-admin-pass --quer
 ```
 
 
-# TODO
-1. Collect logs (possibly with Log Analytics or Aplication Insights)
-2. Understand versioning in ACI - seems like https://blogs.msdn.microsoft.com/stevelasker/2018/03/01/docker-tagging-best-practices-for-tagging-and-versioning-docker-images/ does niot automatically work
-3. Add a troubleshooting section
-4. Consider making enable perf counter an option to the container
-5. Consider a custom counter publisher for log analytics
+# Future work and known limitations
+
+* Guidance on how to collect Photon logs (possibly with Azure Log Analytics or Azure Application Insights)
+* Understand versioning in ACI - seems like https://blogs.msdn.microsoft.com/stevelasker/2018/03/01/docker-tagging-best-practices-for-tagging-and-versioning-docker-images/ does not automatically work
+* Add a troubleshooting section
+* Make ConfigurePhoton.ps1 consistent w.r.o. application begin configured : it currently accepts a file path but configuration section paths with application name(s) are hardcoded.
