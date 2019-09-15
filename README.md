@@ -1,9 +1,7 @@
 # Introduction
 Photon is a game networking engine and multiplayer platform developed and licensed by Exit Games. According to the [company's web site](https://www.photonengine.com/), Photon is used by various developers and studios, including Disney, Ubisoft and Oculus.
 
-Exit Games currently provides two versions of Photon: a cloud-based service and a self-hosted server. This repo shows one way to run the self hosted server as a Windows Docker container.
-
-This repository enables running Photon self-hosted server in a Docker container. It configures the `LoadBalancing` (`Master` and `GameServer`) Photon application, forwards all [default Photon self-hosted server ports](https://doc.photonengine.com/en-us/pun/v2/connection-and-authentication/tcp-and-udp-port-numbers) and turns performance counters on.
+Exit Games currently provides two versions of Photon: a cloud-based service and a self-hosted server. This repo shows one way to run the self-hosted server as a Windows Docker container. It configures the `LoadBalancing` (`Master` and `GameServer`) Photon application, forwards all [default Photon self-hosted server ports](https://doc.photonengine.com/en-us/pun/v2/connection-and-authentication/tcp-and-udp-port-numbers) and turns performance counters on.
 
 **NOTE**: Exit Games Photon is not free software. At the time of writting, Exit Games offers an evaluation version of Photon Self Hosted Server limited to 20 simultaneous users.
 
@@ -31,7 +29,7 @@ This repository enables running Photon self-hosted server in a Docker container.
             | LICENSE
             | README.md
     ```
-4. Make sure Docker for Windows is setup for Windows Containers and is running,
+4. Make sure Docker for Windows is installed, setup for Windows Containers and running,
 5. (Optional) Configure Photon server performance and statistics monitoring - See [Monitoring Photon](#monitoring_photon) below.
 
 ## Building and running locally
@@ -45,18 +43,12 @@ This repository enables running Photon self-hosted server in a Docker container.
     ```powershell
     docker network create --driver=nat --subnet=172.24.1.0/24 --gateway=172.24.1.1 photon-nat
     ```
-4. Run the container:
+4. Run the container locally:
     ```powershell
-    docker run --rm --interactive --tty `
-        --network photon-nat --ip 172.24.1.20 `
-        -e PHOTON_ENDPOINT=172.24.1.20 `
-        -p 843:843/tcp -p 4530:4530/tcp -p 4531:4531/tcp -p 4533:4533/tcp -p 5055:5055/udp `
-        -p 5056:5056/udp -p 5058:5058/udp -p 6060:6060/tcp -p 6061:6061/tcp  -p 6063:6063/tcp `
-        -p 9090:9090/tcp -p 9091:9091/tcp -p 19090:19090/tcp -p 19091:19091/tcp -p 19093:19093/tcp `
-        photon:1.0
+    docker run --rm --interactive --tty --network photon-nat --ip 172.24.1.20 -e PHOTON_ENDPOINT=172.24.1.20 -p 843:843/tcp -p 4530:4530/tcp -p 4531:4531/tcp -p 4533:4533/tcp -p 5055:5055/udp -p 5056:5056/udp -p 5058:5058/udp -p 6060:6060/tcp -p 6061:6061/tcp  -p 6063:6063/tcp -p 9090:9090/tcp -p 9091:9091/tcp -p 19090:19090/tcp -p 19091:19091/tcp -p 19093:19093/tcp photon:1.0
     ```
 
-    By default the image starts the standard `LoadBalancing` application. The Photon server is ready when the container displays the PID of `PhotonSocketServer` as follows:
+    The image starts the standard `LoadBalancing` application. The Photon server is ready when the container displays the PID of `PhotonSocketServer` as follows:
     ```
     DNS Name: 172.24.1.20
     Public IP: 172.24.1.20
@@ -66,7 +58,7 @@ This repository enables running Photon self-hosted server in a Docker container.
     PhotonSocketServer has PID '1976'
     Waiting for PhotonSocketServer to exit
     ```
-    Photon Server is now available at `172.24.1.20` (the value passed as `PHOTON_ENDPOINT`) and games can now connect.
+    Photon Server is now available at `172.24.1.20` (the value passed as `PHOTON_ENDPOINT`) and game clients can now connect.
 
 # Deploy to Azure Container Instance
 You will need an active Azure subscription and an [Azure Image Registry](https://docs.microsoft.com/en-us/azure/container-registry/container-registry-get-started-portal) instance. A "Basic" SKU is sufficient. The following steps assume Administrative User access has been enabled. You will need to substitute `<registry login server>`, `<registry user name>` and `<registry password>` with actual values for your registry. These can be found under the "Access keys" blade in the Azure portal.
@@ -76,6 +68,7 @@ You will need an active Azure subscription and an [Azure Image Registry](https:/
     docker build -t <registry login server>/gameserver/photon:1.0 .
     ```
     or tag an existing image:
+
     ```powershell
     docker tag photon:1.0 <registry login server>/gameserver/photon:1.0
     ```
@@ -127,7 +120,7 @@ By default, performance counters are only available in memory on the Photon serv
 * [Azure Application Insights](https://docs.microsoft.com/en-us/azure/azure-monitor/app/app-insights-overview) - see [this repository](https://github.com/GillesZunino/Photon-Azure-CounterPublishers).
 
 ## Configuring `CounterPublisher` in the container
-Configuring `CounterPublisher` is highly dependant on the protocol or the service to publish performances counters and statistics to. The steps below outline the typical procedure. For precise instructions specific to a protocol or service, refer to one of the links above.
+Configuring `CounterPublisher` is highly dependant on the protocol or the service to publish performances counters and statistics to. The steps below outline the typical procedure. For instructions specific to a protocol or service, refer to one of the links above.
 
 1. (Optional) If the protocol or monitoring service requires a `CounterPublisher` plugin, copy all binaries and supporting files to the following directories:
    * `deploy\CounterPublisher\bin`
