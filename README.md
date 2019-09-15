@@ -1,7 +1,9 @@
 # Introduction
 Photon is a game networking engine and multiplayer platform developed and licensed by Exit Games. According to the [company's web site](https://www.photonengine.com/), Photon is used by various developers and studios, including Disney, Ubisoft and Oculus.
 
-Exit Games currently provides two versions of Photon: a cloud based service and a self-hosted server. This repo shows one way to run the self hosted server as a Windows Docker container.
+Exit Games currently provides two versions of Photon: a cloud-based service and a self-hosted server. This repo shows one way to run the self hosted server as a Windows Docker container.
+
+This repository enables running Photon self-hosted server in a Docker container. It configures the `LoadBalancing` (`Master` and `GameServer`) Photon application, forwards all [default Photon self-hosted server ports](https://doc.photonengine.com/en-us/pun/v2/connection-and-authentication/tcp-and-udp-port-numbers) and turns performance counters on.
 
 **NOTE**: Exit Games Photon is not free software. At the time of writting, Exit Games offers an evaluation version of Photon Self Hosted Server limited to 20 simultaneous users.
 
