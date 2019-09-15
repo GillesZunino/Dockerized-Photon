@@ -37,7 +37,7 @@ Exit Games currently provides two versions of Photon: a cloud based service and 
     ```
     docker build -t photon:1.0 .
     ```
-    Docker will pull Windows Server Core 1809 from the Microsoft Image Registry `mcr.microsoft.com/windows/servercore:1809` if needed. This may take a while.
+    Docker will pull Windows Server Core 1809 from the Microsoft Image Registry `mcr.microsoft.com/windows/servercore:1903` if needed. This may take a while.
 3. Create a custom NAT Docker network to run Photon locally. This only needs to be done once:
     ```
     docker network create --driver=nat --subnet=172.24.1.0/24 --gateway=172.24.1.1 photon-nat
