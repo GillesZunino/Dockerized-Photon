@@ -113,7 +113,8 @@ $(az keyvault secret show --vault-name $AKV_NAME -n myregsitry-admin-pass --quer
 
 
 # TODO
-1. Make TCP work
-2. Collect performance counters and logs with Log Analytics
-3. Understand versioning in ACI - seems like https://blogs.msdn.microsoft.com/stevelasker/2018/03/01/docker-tagging-best-practices-for-tagging-and-versioning-docker-images/ does niot automatically work
-4. Add a troubleshooting section
+1. Collect logs (possibly with Log Analytics or Aplication Insights)
+2. Understand versioning in ACI - seems like https://blogs.msdn.microsoft.com/stevelasker/2018/03/01/docker-tagging-best-practices-for-tagging-and-versioning-docker-images/ does niot automatically work
+3. Add a troubleshooting section
+4. Consider making enable perf counter an option to the container
+5. Consider a custom counter publisher for log analytics
