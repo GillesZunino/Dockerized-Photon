@@ -79,24 +79,11 @@ You will need an active Azure subscription and an [Azure Image Registry](https:/
     ```
 2. Run the Photon image in an instance of [Azure Container Instance](https://docs.microsoft.com/en-us/azure/container-instances/). This can be done via [Azure Powershell](https://docs.microsoft.com/en-us/powershell/azure/overview?view=azps-2.1.0) :
     ```powershell
-    New-AzureRmResourceGroupDeployment `
-            -ResourceGroupName <resource group name> `
-            -TemplateFile Template\template.json `
-            -imageTag <registry login server>/gameserver/photon:1.0 `
-            -containerRegistryServer <registry login server> `
-            -containerRegistryUsername <registry user name> `
-            -containerRegistryPassword <registry password>
+    New-AzureRmResourceGroupDeployment -ResourceGroupName <resource group name> -TemplateFile Template\template.json -imageTag <registry login server>/gameserver/photon:1.0 -containerRegistryServer <registry login server> -containerRegistryUsername <registry user name> -containerRegistryPassword <registry password>
     ```
     or [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest) :
     ```powershell
-    az group deployment create \
-            --resource-group <resource group name> \
-            --template-file Template\template.json \
-            --parameters \
-                imageTag=<registry login server>/gameserver/photon:1.0 \
-                containerRegistryServer=<registry login server> \
-                containerRegistryUsername=<registry user name> \
-                containerRegistryPassword=<registry password> 
+    az group deployment create --resource-group <resource group name> --template-file Template\template.json --parameters imageTag=<registry login server>/gameserver/photon:1.0 containerRegistryServer=<registry login server> containerRegistryUsername=<registry user name> containerRegistryPassword=<registry password> 
     ```
     If the Container Instance Group exists, it is updated. Caution: all containers in the group are stopped first.
 
