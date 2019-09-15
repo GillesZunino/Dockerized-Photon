@@ -31,27 +31,28 @@ This repository enables running Photon self-hosted server in a Docker container.
             | LICENSE
             | README.md
     ```
-4. Make sure Docker for Windows is setup for Windows Containers and is running.
+4. Make sure Docker for Windows is setup for Windows Containers and is running,
+5. (Optional) Configure Photon server performance and statistics monitoring - See [Monitoring Photon](#monitoring_photon) below.
 
 ## Building and running locally
 1. Open a Powershell window and cd into `<repo root>`
 2. Build and tag the image `photon:1.0` by running:
-    ```
+    ```powershell
     docker build -t photon:1.0 .
     ```
     Docker will pull Windows Server Core 1809 from the Microsoft Image Registry `mcr.microsoft.com/windows/servercore:1903` if needed. This may take a while.
 3. Create a custom NAT Docker network to run Photon locally. This only needs to be done once:
-    ```
+    ```powershell
     docker network create --driver=nat --subnet=172.24.1.0/24 --gateway=172.24.1.1 photon-nat
     ```
 4. Run the container:
-    ```
-    docker run --rm --interactive --tty \
-        --network photon-nat --ip 172.24.1.20 \
-        -e PHOTON_ENDPOINT=172.24.1.20 \
-        -p 843:843/tcp -p 4530:4530/tcp -p 4531:4531/tcp -p 4533:4533/tcp -p 5055:5055/udp \
-        -p 5056:5056/udp -p 5058:5058/udp -p 6060:6060/tcp -p 6061:6061/tcp  -p 6063:6063/tcp \
-        -p 9090:9090/tcp -p 9091:9091/tcp -p 19090:19090/tcp -p 19091:19091/tcp -p 19093:19093/tcp \
+    ```powershell
+    docker run --rm --interactive --tty `
+        --network photon-nat --ip 172.24.1.20 `
+        -e PHOTON_ENDPOINT=172.24.1.20 `
+        -p 843:843/tcp -p 4530:4530/tcp -p 4531:4531/tcp -p 4533:4533/tcp -p 5055:5055/udp `
+        -p 5056:5056/udp -p 5058:5058/udp -p 6060:6060/tcp -p 6061:6061/tcp  -p 6063:6063/tcp `
+        -p 9090:9090/tcp -p 9091:9091/tcp -p 19090:19090/tcp -p 19091:19091/tcp -p 19093:19093/tcp `
         photon:1.0
     ```
 
@@ -71,20 +72,20 @@ This repository enables running Photon self-hosted server in a Docker container.
 You will need an active Azure subscription and an [Azure Image Registry](https://docs.microsoft.com/en-us/azure/container-registry/container-registry-get-started-portal) instance. A "Basic" SKU is sufficient. The following steps assume Administrative User access has been enabled. You will need to substitute `<registry login server>`, `<registry user name>` and `<registry password>` with actual values for your registry. These can be found under the "Access keys" blade in the Azure portal.
 
 1. Tag the image with the registry login server. You can either build and tag the image in one step:
-    ```
+    ```powershell
     docker build -t <registry login server>/gameserver/photon:1.0 .
     ```
     or tag an existing image:
-    ```
+    ```powershell
     docker tag photon:1.0 <registry login server>/gameserver/photon:1.0
     ```
 1. Login to the registry and push the image. Provide `<registry user name>` and `<registry password>` if asked:
-    ```
+    ```powershell
     docker login <registry login server>
     docker push <registry login server>/gameserver/photon:1.0
     ```
 2. Run the Photon image in an instance of [Azure Container Instance](https://docs.microsoft.com/en-us/azure/container-instances/). This can be done via [Azure Powershell](https://docs.microsoft.com/en-us/powershell/azure/overview?view=azps-2.1.0) :
-    ```
+    ```powershell
     New-AzureRmResourceGroupDeployment `
             -ResourceGroupName <resource group name> `
             -TemplateFile Template\template.json `
@@ -94,7 +95,7 @@ You will need an active Azure subscription and an [Azure Image Registry](https:/
             -containerRegistryPassword <registry password>
     ```
     or [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest) :
-    ```
+    ```powershell
     az group deployment create \
             --resource-group <resource group name> \
             --template-file Template\template.json \
@@ -108,11 +109,63 @@ You will need an active Azure subscription and an [Azure Image Registry](https:/
 
 The previous commands provide `<registry user name>` and `<registry password>` on the command line. It is best to store these secrets in [Azure Key Vault](https://docs.microsoft.com/en-us/azure/key-vault/) and retrieve them programatically during deployment. For instance the following command will retrieve the secret `myregsitry-admin-pass` from the Key Vault named `mykeyvault`. For more information, refer to [](https://docs.microsoft.com/en-us/azure/container-instances/container-instances-using-azure-container-registry).
 
-```
+```powershell
 AKV_NAME=mykeyvault
 $(az keyvault secret show --vault-name $AKV_NAME -n myregsitry-admin-pass --query value -o tsv)
 ```
 
+
+# <a name="monitoring_photon"></a>Monitoring Photon
+Photon tracks server performance and statistics via [performance counters](https://doc.photonengine.com/en-us/server/current/performance/photon-counters). Applications can create their own performance counters (see [Implementing Custom Performance Counters](https://doc.photonengine.com/en-us/server/current/performance/photon-counters)).
+
+By default, performance counters are only available in memory on the Photon server. Exit Games offers `CounterPublisher`, a mecanism to publish performance counters. CounterPublisher is extensible and can publish metrics via standard protocols (UDP, HTTP(s), PGM - see [Application Protocols](https://doc.photonengine.com/en-us/server/current/performance/photon-counters)) or to monitoring applications or services including:
+* [StatsD](https://github.com/etsy/statsd/) - see [Publishing to StatsD](https://doc.photonengine.com/en-us/server/current/performance/photon-counters),
+* [Graphite](https://graphite.wikidot.com/carbon) - see [Publishing to Graphite](https://doc.photonengine.com/en-us/server/current/performance/photon-counters),
+* [InfluxDB](https://www.influxdata.com/) - see [Publishing to InfluxDB](https://doc.photonengine.com/en-us/server/current/performance/photon-counters),
+* [NewRelic](https://newrelic.com/platform) - see [Publishing to NewRelic Platform](https://doc.photonengine.com/en-us/server/current/performance/photon-counters) and [this repository](https://github.com/PhotonEngine/photon.counterpublisher.newrelic)
+* [Amazon CloudWatch](https://aws.amazon.com/cloudwatch/) - see [Publishing to Amazon AWS CloudWatch](https://doc.photonengine.com/en-us/server/current/performance/photon-counters) and [this repository](https://github.com/PhotonEngine/photon.counterpublisher.cloudwatch),
+* [Azure Application Insights](https://docs.microsoft.com/en-us/azure/azure-monitor/app/app-insights-overview) - see [this repository](https://github.com/GillesZunino/Photon-Azure-CounterPublishers).
+
+## Configuring `CounterPublisher` in the container
+Configuring `CounterPublisher` is highly dependant on the protocol or the service to publish performances counters and statistics to. The steps below outline the typical procedure. For precise instructions specific to a protocol or service, refer to one of the links above.
+
+1. (Optional) If the protocol or monitoring service requires a `CounterPublisher` plugin, copy all binaries and supporting files to the following directories:
+   * `deploy\CounterPublisher\bin`
+   * `deploy\Loadbalancing\GameServer\bin`
+   * `deploy\Loadbalancing\Master\bin`
+
+2. Update the `<Photon><CounterPublisher>...</CounterPublisher></Photon>` configuration section in the following configuration files:
+
+   * `deploy\CounterPublisher\bin\CounterPublisher.dll.config`
+   * `deploy\Loadbalancing\GameServer\bin\Photon.LoadBalancing.dll.config`
+   * `deploy\Loadbalancing\Master\bin\Photon.LoadBalancing.dll.config`
+
+    The default `<Photon><CounterPublisher>...</CounterPublisher></Photon>` publishes performance counters via Photon's own binary protocol over UDP:
+    ```xml
+    <Photon>
+        <CounterPublisher enabled="True" updateInterval="1">
+        <Sender
+            endpoint="udp://255.255.255.255:40001"
+            protocol="PhotonBinary"
+            initialDelay="10"
+            sendInterval="10" />
+        </CounterPublisher>
+    </Photon>
+    ```
+
+    Typical changes to this configuration section include specifying which plugin(s) to use, how frequently to publish metrics, ....
+
+## Performance and Metrics tips
+
+* It is possible to list all registered Windows Performance Counters exposed by Photon with the following powershell command:
+    ```powershell
+    Get-Counter -ListSet "Photon*"
+    ```
+
+* Retrieving the value of `Photon Socket Server: UDP(_Total)\UDP: Connections Active` every 10 seconds can be done with the following powershell command:
+    ```powershell
+    Get-Counter -Counter "\Photon Socket Server: UDP(_Total)\UDP: Connections Active" -SampleInterval 10 -Continuous
+    ```
 
 # Future work and known limitations
 
