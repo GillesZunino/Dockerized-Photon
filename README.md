@@ -135,6 +135,8 @@ Configuring `CounterPublisher` is highly dependant on the protocol or the servic
 
     Typical changes to this configuration section include specifying which plugin(s) to use, how frequently to publish metrics, ....
 
+3. Rebuild and run the Docker image with updated configuration.
+
 ## Performance and Metrics tips
 
 * It is possible to list all registered Windows Performance Counters exposed by Photon with the following powershell command:
@@ -152,4 +154,5 @@ Configuring `CounterPublisher` is highly dependant on the protocol or the servic
 * Guidance on how to collect Photon logs (possibly with Azure Log Analytics or Azure Application Insights)
 * Understand versioning in ACI - seems like https://blogs.msdn.microsoft.com/stevelasker/2018/03/01/docker-tagging-best-practices-for-tagging-and-versioning-docker-images/ does not automatically work
 * Add a troubleshooting section
-* Make ConfigurePhoton.ps1 consistent w.r.o. application begin configured : it currently accepts a file path but configuration section paths with application name(s) are hardcoded.
+* Make ConfigurePhoton.ps1 consistent w.r.o. application begin configured: it currently accepts a file path but configuration section paths with application name(s) are hardcoded.
+* Consider describing configuration for HTTPS or WebSocket / Secure WebSocket.
