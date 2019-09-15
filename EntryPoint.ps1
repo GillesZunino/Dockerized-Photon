@@ -1,3 +1,15 @@
+<#
+.SYNOPSIS
+    Configures Photon.
+.DESCRIPTION
+    Main entry point for Photon configuration in a Windows container.
+.INPUTS
+.OUTPUTS
+.NOTES
+    Expects the following environment variables to be set:
+    * PHOTON_ENDPOINT : the public DNS name, IP Address of the Photon Server. use '127.0.0.1' or 'localhost' for the local server
+#>
+
 # Constants - Capture the location of various executables and files
 [bool] $enablePerformanceCounters = $true
 [string] $PhotonSocketServerDirectoryRelativePath = ".\deploy\bin_Win64"
@@ -8,7 +20,7 @@
 
 
 # Include configuration functions
-. .\ConfigurePhoton.ps1
+. .\Configure-LoadBalancingApp.ps1
 
 
 function Resolve-PhotonEndpoint([string] $photonEndpoint, [int] $numberOfRetries, [int] $secondsBetweenRetries)
@@ -97,11 +109,8 @@ Write-Host "DNS Name: $endpoint"
 [string] $loadBalancerPublicIP = Get-PhotonPublicIp $endpoint
 Write-Host "Public IP: $loadBalancerPublicIP"
 
-Write-Host "Configuring Master (Photon.LoadBalancing.dll.config)"
-Configure-Photon ".\deploy\Loadbalancing\Master\bin\Photon.LoadBalancing.dll.config" $loadBalancerPublicIP $enablePerformanceCounters
-
-Write-Host "Configuring GameServer (Photon.LoadBalancing.dll.config)"
-Configure-Photon ".\deploy\Loadbalancing\GameServer\bin\Photon.LoadBalancing.dll.config" $loadBalancerPublicIP $enablePerformanceCounters
+Write-Host "Configuring LoadBalancing application"
+Configure-LoadBalancingApp $loadBalancerPublicIP $enablePerformanceCounters
 
 # Register Windows performance counters
 Register-PerformanceCounters $enablePerformanceCounters

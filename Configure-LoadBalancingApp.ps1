@@ -1,4 +1,27 @@
-function Configure-Photon([string] $configFilePath, [string] $loadBalancerPublicIp, [bool] $enablePerformanceCounters)
+<#
+.SYNOPSIS
+Configure Photon 'LoadBalanding' application with the server's public IP. 
+
+.DESCRIPTION
+Configure Photon 'LoadBalanding' application with the server's public IP. Enables/disables performance counters.
+
+.PARAMETER loadBalancerPublicIp
+Public IP of the Photon server.
+
+.PARAMETER enablePerformanceCounters
+$true to enable, $false to disable.
+#>
+
+function Configure-LoadBalancingApp([string] $loadBalancerPublicIp, [bool] $enablePerformanceCounters)
+{
+    Write-Host "[LoadBalancing] Configuring Master (Photon.LoadBalancing.dll.config)"
+    Update-PhotonConfiguration ".\deploy\Loadbalancing\Master\bin\Photon.LoadBalancing.dll.config" $loadBalancerPublicIP $enablePerformanceCounters
+
+    Write-Host "[LoadBalancing] Configuring GameServer (Photon.LoadBalancing.dll.config)"
+    Update-PhotonConfiguration ".\deploy\Loadbalancing\GameServer\bin\Photon.LoadBalancing.dll.config" $loadBalancerPublicIP $enablePerformanceCounters
+}
+
+function Update-PhotonConfiguration([string] $configFilePath, [string] $loadBalancerPublicIp, [bool] $enablePerformanceCounters)
 {
     [xml] $config = Get-Configuration $configFilePath
 

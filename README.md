@@ -152,7 +152,5 @@ Configuring `CounterPublisher` is highly dependant on the protocol or the servic
 # Future work and known limitations
 
 * Guidance on how to collect Photon logs (possibly with Azure Log Analytics or Azure Application Insights)
-* Understand versioning in ACI - seems like https://blogs.msdn.microsoft.com/stevelasker/2018/03/01/docker-tagging-best-practices-for-tagging-and-versioning-docker-images/ does not automatically work
 * Add a troubleshooting section
-* Make ConfigurePhoton.ps1 consistent w.r.o. application begin configured: it currently accepts a file path but configuration section paths with application name(s) are hardcoded.
 * Consider describing configuration for HTTPS or WebSocket / Secure WebSocket.
