@@ -7,7 +7,7 @@ Exit Games currently provides two versions of Photon: a cloud based service and 
 
 # Setup
 1. Clone this repository in a convenient location, perhaps C:\DockerizedPhoton. We will call this location `<repo root>`,
-2. Download [ExitGames Photon Server SDK 4.0.29.11263](https://dashboard.photonengine.com/download/photon-server-sdk_v4-0-29-11263.exe) or later. Other versions of Photon Server SDKs are available on the [ExitGames download page](https://www.photonengine.com/en-US/sdks#serverserver) (ExitGames login required),
+2. Download [Exit Games Photon Server SDK 4.0.29.11263](https://dashboard.photonengine.com/download/photon-server-sdk_v4-0-29-11263.exe) or later. Other versions of Photon Server SDKs are available on the [Exit Games download page](https://www.photonengine.com/en-US/sdks#serverserver) (Exit Games login required),
 3. Extract the SDK in a directory called Photon. The directory structure should be as follows:
     ```
         <repo root>
