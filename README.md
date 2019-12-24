@@ -157,7 +157,7 @@ az group deployment create
             --name <registry password secret name> \
             --query value -o tsv)
 ```
-For more information, refer to [](https://docs.microsoft.com/en-us/azure/container-instances/container-instances-using-azure-container-registry).
+For more information, refer to [Deploy to Azure Container Instances from Azure Container Registry](https://docs.microsoft.com/en-us/azure/container-instances/container-instances-using-azure-container-registry).
 
 ## Troubleshooting
 *. ### Clients cannot connect to the deployed Photon server
