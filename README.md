@@ -72,21 +72,62 @@ You will need an active Azure subscription and an [Azure Image Registry](https:/
     ```powershell
     docker tag photon:1.0 <registry login server>/gameserver/photon:1.0
     ```
-1. Login to the registry and push the image. Provide `<registry user name>` and `<registry password>` if asked:
+2. Login to the registry and push the image. Provide `<registry user name>` and `<registry password>` if asked:
     ```powershell
     docker login <registry login server>
     docker push <registry login server>/gameserver/photon:1.0
     ```
-2. Run the Photon image in an instance of [Azure Container Instance](https://docs.microsoft.com/en-us/azure/container-instances/). This can be done via [Azure Powershell](https://docs.microsoft.com/en-us/powershell/azure/overview?view=azps-2.1.0) :
+3. Run the Photon image in an instance of [Azure Container Instance](https://docs.microsoft.com/en-us/azure/container-instances/). This can be done via [Azure Powershell](https://docs.microsoft.com/en-us/powershell/azure/overview?view=azps-2.1.0) :
     ```powershell
-    New-AzureRmResourceGroupDeployment -ResourceGroupName <resource group name> -TemplateFile Template\template.json -imageTag <registry login server>/gameserver/photon:1.0 -containerRegistryServer <registry login server> -containerRegistryUsername <registry user name> -containerRegistryPassword <registry password>
+    New-AzureRmResourceGroupDeployment `
+        -ResourceGroupName <resource group name> `
+        -TemplateFile Template\template.json `
+        -imageTag <registry login server>/gameserver/photon:1.0 `
+        -containerRegistryServer <registry login server> `
+        -containerRegistryUsername <registry user name> `
+        -containerRegistryPassword <registry password> `
+        -cpuCount=2 `
+        -memoryGiB=2
     ```
     or [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest) :
-    ```powershell
-    az group deployment create --resource-group <resource group name> --template-file Template\template.json --parameters imageTag=<registry login server>/gameserver/photon:1.0 containerRegistryServer=<registry login server> containerRegistryUsername=<registry user name> containerRegistryPassword=<registry password> 
+    ```shell
+    az group deployment create
+        --resource-group <resource group name> \
+        --template-file Template\template.json \
+        --parameters \
+            imageTag=<registry login server>/gameserver/photon:1.0 \
+            containerRegistryServer=<registry login server> \
+            containerRegistryUsername=<registry user name> \
+            containerRegistryPassword=<registry password>
     ```
     If the Container Instance Group exists, it is updated. Caution: all containers in the group are stopped first.
 
+## Configure number of CPUs and memory size
+The number of CPUs and memory size can be configured by passing the deployment parameters `cpuCount=<number of virtual cpus>` or `memoryGiB=<amount of memory>` respectively. This can be done via [Azure Powershell](https://docs.microsoft.com/en-us/powershell/azure/overview?view=azps-2.1.0) :
+```powershell
+New-AzureRmResourceGroupDeployment `
+    -ResourceGroupName <resource group name> `
+    -TemplateFile Template\template.json `
+    -imageTag <registry login server>/gameserver/photon:1.0 `
+    -containerRegistryServer <registry login server> `
+    -containerRegistryUsername <registry user name> `
+    -containerRegistryPassword <registry password> `
+    -cpuCount=2 `
+    -memoryGiB=2
+```
+or [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest) :
+```shell
+az group deployment create
+    --resource-group <resource group name> \
+    --template-file Template\template.json \
+    --parameters \
+        imageTag=<registry login server>/gameserver/photon:1.0 \
+        containerRegistryServer=<registry login server> \
+        containerRegistryUsername=<registry user name> \
+        containerRegistryPassword=<registry password> \
+        cpuCount=2 \
+        memoryGiB=2
+```
 The previous commands provide `<registry user name>` and `<registry password>` on the command line. It is best to store these secrets in [Azure Key Vault](https://docs.microsoft.com/en-us/azure/key-vault/) and retrieve them programatically during deployment. For instance the following command will retrieve the secret `myregsitry-admin-pass` from the Key Vault named `mykeyvault`. For more information, refer to [](https://docs.microsoft.com/en-us/azure/container-instances/container-instances-using-azure-container-registry).
 
 ```powershell
