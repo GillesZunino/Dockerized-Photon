@@ -128,12 +128,39 @@ az group deployment create
         cpuCount=2 \
         memoryGiB=2
 ```
-The previous commands provide `<registry user name>` and `<registry password>` on the command line. It is best to store these secrets in [Azure Key Vault](https://docs.microsoft.com/en-us/azure/key-vault/) and retrieve them programatically during deployment. For instance the following command will retrieve the secret `myregsitry-admin-pass` from the Key Vault named `mykeyvault`. For more information, refer to [](https://docs.microsoft.com/en-us/azure/container-instances/container-instances-using-azure-container-registry).
 
+## Retrieving Azure Container Registry credentials from Azure Key Vault
+The previous instructions provide `<registry user name>` and `<registry password>` on the command line. It is best to store these secrets in [Azure Key Vault](https://docs.microsoft.com/en-us/azure/key-vault/) and retrieve them programatically during deployment.
+
+You will need an instance of Azure Key Vault with at least one secret to store the container registry password. In commands below, substitute `<keyvault name>`, and `<registry password secret name>` with the name of the Key Vault instance and the name of the container registry password secret name. To deploy via [Azure Powershell](https://docs.microsoft.com/en-us/powershell/azure/overview?view=azps-2.1.0) :
 ```powershell
-AKV_NAME=mykeyvault
-$(az keyvault secret show --vault-name $AKV_NAME -n myregsitry-admin-pass --query value -o tsv)
+New-AzureRmResourceGroupDeployment `
+    -ResourceGroupName <resource group name> `
+    -TemplateFile Template\template.json `
+    -imageTag <registry login server>/gameserver/photon:1.0 `
+    -containerRegistryServer <registry login server> `
+    -containerRegistryUsername <registry user name> `
+    -containerRegistryPassword `
+        { (Get-AzureKeyVaultSecret -VaultName <keyvault name> -Name <registry password secret name>).SecretValueText }
 ```
+or [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest) :
+```shell
+az group deployment create
+    --resource-group <resource group name> \
+    --template-file Template\template.json \
+    --parameters \
+        imageTag=<registry login server>/gameserver/photon:1.0 \
+        containerRegistryServer=<registry login server> \
+        containerRegistryUsername=<registry user name> \
+        containerRegistryPassword=$(az keyvault secret show \
+            --vault-name <keyvault name> \
+            --name <registry password secret name> \
+            --query value -o tsv)
+```
+For more information, refer to [](https://docs.microsoft.com/en-us/azure/container-instances/container-instances-using-azure-container-registry).
+
+## Troubleshooting
+*. ### Clients cannot connect to the deployed Photon server
 
 
 # <a name="monitoring_photon"></a>Monitoring Photon
