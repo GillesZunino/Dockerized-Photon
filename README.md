@@ -3,12 +3,12 @@ Photon is a game networking engine and multiplayer platform developed and licens
 
 Exit Games currently provides two versions of Photon: a cloud-based service and a self-hosted server. This repo shows one way to run the self-hosted server as a Windows Docker container. It configures the `LoadBalancing` (`Master` and `GameServer`) Photon application, forwards all [default Photon self-hosted server ports](https://doc.photonengine.com/en-us/pun/v2/connection-and-authentication/tcp-and-udp-port-numbers) and turns performance counters on.
 
-**NOTE**: Exit Games Photon is not free software. At the time of writting, Exit Games offers an evaluation version of Photon Self Hosted Server limited to 20 simultaneous users.
+**NOTE**: Exit Games Photon is not free software. At the time of writting, Exit Games offers an evaluation version of Photon Self Hosted Server limited to 20 concurrent connected users.
 
 # Setup
 1. Clone this repository in a convenient location, perhaps C:\DockerizedPhoton. We will call this location `<repo root>`,
 2. Download [Exit Games Photon Server SDK 4.0.29.11263](https://dashboard.photonengine.com/download/photon-server-sdk_v4-0-29-11263.exe) or later. Other versions of Photon Server SDKs are available on the [Exit Games download page](https://www.photonengine.com/en-US/sdks#serverserver) (Exit Games login required),
-3. Extract the SDK in a directory called Photon. The directory structure should be as follows:
+3. Extract the Photon SDK in a directory called Photon. The directory structure should be as follows:
     ```
         <repo root>
             | .dockerignore
@@ -38,7 +38,7 @@ Exit Games currently provides two versions of Photon: a cloud-based service and 
     ```powershell
     docker build -t photon:1.0 .
     ```
-    Docker will pull Windows Server Core 1809 from the Microsoft Image Registry `mcr.microsoft.com/windows/servercore:1903` if needed. This may take a while.
+    Docker will pull Windows Server Core from the Microsoft Image Registry if needed (Windows Server Core 1809 - `mcr.microsoft.com/windows/servercore:1809`). This may take a while.
 3. Create a custom NAT Docker network to run Photon locally. This only needs to be done once:
     ```powershell
     docker network create --driver=nat --subnet=172.24.1.0/24 --gateway=172.24.1.1 photon-nat
@@ -61,7 +61,7 @@ Exit Games currently provides two versions of Photon: a cloud-based service and 
     Photon Server is now available at `172.24.1.20` (the value passed as `PHOTON_ENDPOINT`) and game clients can now connect.
 
 # Deploy to Azure Container Instance
-You will need an active Azure subscription and an [Azure Image Registry](https://docs.microsoft.com/en-us/azure/container-registry/container-registry-get-started-portal) instance. A "Basic" SKU is sufficient. The following steps assume Administrative User access has been enabled. You will need to substitute `<registry login server>`, `<registry user name>` and `<registry password>` with actual values for your registry. These can be found under the "Access keys" blade in the Azure portal.
+You will need an active Azure subscription and an [Azure Image Registry](https://docs.microsoft.com/en-us/azure/container-registry/container-registry-get-started-portal) instance. A "Basic" SKU is sufficient. The following steps assume Administrative User access has been enabled. You will need to substitute `<registry login server>`, `<registry user name>` and `<registry password>` with actual login information for your registry. These can be found under the "Access keys" blade in the Azure portal.
 
 1. Tag the image with the registry login server. You can either build and tag the image in one step:
     ```powershell

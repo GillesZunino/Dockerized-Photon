@@ -1,6 +1,6 @@
 #escape=`
 
-FROM mcr.microsoft.com/windows/servercore:1903
+FROM mcr.microsoft.com/windows/servercore:1809
 
 SHELL [ "powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'Continue'; $verbosePreference='Continue';" ]
 
