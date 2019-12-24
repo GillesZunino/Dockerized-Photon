@@ -159,10 +159,6 @@ az group deployment create
 ```
 For more information, refer to [Deploy to Azure Container Instances from Azure Container Registry](https://docs.microsoft.com/en-us/azure/container-instances/container-instances-using-azure-container-registry).
 
-## Troubleshooting
-*. ### Clients cannot connect to the deployed Photon server
-
-
 # <a name="monitoring_photon"></a>Monitoring Photon
 Photon tracks server performance and statistics via [performance counters](https://doc.photonengine.com/en-us/server/current/performance/photon-counters). Applications can create their own performance counters (see [Implementing Custom Performance Counters](https://doc.photonengine.com/en-us/server/current/performance/photon-counters)).
 
