@@ -22,6 +22,13 @@
                 "description": "DNS label of container group."
             }
         },
+        "fqdn": {
+            "defaultValue": "",
+            "type": "string",
+            "metadata": {
+                "description": "Fully qualified address of the Photon server as seen by clients"
+            }
+        },
         "cpuCount": {
             "defaultValue": 1,
             "type": "int",
@@ -57,7 +64,7 @@
     },
     "variables": {
         "location": "[resourceGroup().location]",
-        "photonEndpoint": "[replace(parameters('containerRegistryServer'), parameters('containerRegistryUsername'), parameters('containerGroupName'))]"
+        "photonEndpoint": "[if(empty(parameters('fqdn')), concat(parameters('dnsLabel'), '.', variables('location'), '.azurecontainer.io'), parameters('fqdn'))]"
     },
     "resources": [
         {
