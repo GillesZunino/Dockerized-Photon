@@ -91,7 +91,7 @@ You will need an active Azure subscription and an [Azure Image Registry](https:/
     ```
     or [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest) :
     ```shell
-    az group deployment create
+    az group deployment create \
         --resource-group <resource group name> \
         --template-file Template\template.json \
         --parameters \
@@ -117,7 +117,7 @@ New-AzureRmResourceGroupDeployment `
 ```
 or [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest) :
 ```shell
-az group deployment create
+az group deployment create \
     --resource-group <resource group name> \
     --template-file Template\template.json \
     --parameters \
@@ -145,7 +145,7 @@ New-AzureRmResourceGroupDeployment `
 ```
 or [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest) :
 ```shell
-az group deployment create
+az group deployment create \
     --resource-group <resource group name> \
     --template-file Template\template.json \
     --parameters \
