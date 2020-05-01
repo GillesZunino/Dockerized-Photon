@@ -218,3 +218,4 @@ Configuring `CounterPublisher` is highly dependant on the protocol or the servic
 * Guidance on how to collect Photon logs (possibly with Azure Log Analytics or Azure Application Insights)
 * Add a troubleshooting section
 * Consider describing configuration for HTTPS or WebSocket / Secure WebSocket.
+* Describe the automatic IP discovery and fallback to PHOTON_ENDPOINT.
