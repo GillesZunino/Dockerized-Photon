@@ -91,9 +91,9 @@ You will need an active Azure subscription and an [Azure Image Registry](https:/
     ```
     or [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest) :
     ```shell
-    az group deployment create \
+    az deployment group create \
         --resource-group <resource group name> \
-        --template-file Template\template.json \
+        --template-file Template/template.json \
         --parameters \
             imageTag=<registry login server>/gameserver/photon:1.0 \
             containerRegistryServer=<registry login server> \
@@ -117,9 +117,9 @@ New-AzureRmResourceGroupDeployment `
 ```
 or [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest) :
 ```shell
-az group deployment create \
+az deployment group create \
     --resource-group <resource group name> \
-    --template-file Template\template.json \
+    --template-file Template/template.json \
     --parameters \
         imageTag=<registry login server>/gameserver/photon:1.0 \
         containerRegistryServer=<registry login server> \
@@ -145,9 +145,9 @@ New-AzureRmResourceGroupDeployment `
 ```
 or [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest) :
 ```shell
-az group deployment create \
+az deployment group create \
     --resource-group <resource group name> \
-    --template-file Template\template.json \
+    --template-file Template/template.json \
     --parameters \
         imageTag=<registry login server>/gameserver/photon:1.0 \
         containerRegistryServer=<registry login server> \
