@@ -23,7 +23,7 @@
 . .\Configure-LoadBalancingApp.ps1
 
 
-function Resolve-PhotonEndpoint([string] $photonEndpoint, [int] $numberOfRetries, [int] $secondsBetweenRetries)
+function Resolve-PhotonEndpoint([string] $photonEndpoint, [string] $nameServer, [int] $numberOfRetries, [int] $secondsBetweenRetries)
 {
     [int] $retries = $numberOfRetries
     [int] $waitInSeconds = $secondsBetweenRetries
@@ -31,7 +31,7 @@ function Resolve-PhotonEndpoint([string] $photonEndpoint, [int] $numberOfRetries
     do {
         try {
             Write-Host "Resolving '$endpoint'"
-            $dnsEntry = Resolve-DnsName -Name $endpoint -Type A -Server 1.1.1.1
+            $dnsEntry = Resolve-DnsName -Name $endpoint -Type A -Server $nameServer
             return $dnsEntry.IPAddress
         }
         catch {
@@ -62,29 +62,40 @@ function Get-PhotonPublicIp([string] $photonEndpoint)
         return $photonEndpoint
     }
 
+    # CloudFlare nameserver
+    [string] $cloudFlareNameserver = "1.1.1.1"
+
     # Number of attempts to resolve the DNS endpoint of the container
     [int] $retries = 10
 
     # Current Azure Container Instance TTL on A records is 14
     [int] $waitInSeconds = 15
     
-    # When re-creating a container shortly after deleting it, the DNS name may still point to the previous IP
-    # We keep on resolving the IP and waiting for TTL to expire until we get to a stable IP
-    Write-Host "Waiting for public IP to stabilize"
-    [string] $ip1 = $null
-    [string] $ip2 = $null
-    do {
-        $ip1 = $null
-        $ip2 = $null
+    # Resolve 'myip.opendns.com' against 'resolver1.opendns.com' will return our public IP
+    Write-Host "Resolving 'myip.opendns.com' using nameserver 'resolver1.opendns.com'" 
+    [string] $inferedIp = Resolve-PhotonEndpoint "myip.opendns.com" "resolver1.opendns.com" $retries $waitInSeconds
+    if (![string]::IsNullOrEmpty($inferedIp)) {
+        Write-Host "OpenDNS resolved my IP to '$inferedIp'"
+        return $inferedIp
+    } else {
+        # When re-creating a container shortly after deleting it, the DNS name may still point to the previous IP
+        # We keep on resolving the IP and waiting for TTL to expire until we get to a stable IP
+        Write-Host "Waiting for public IP to stabilize"
+        [string] $ip1 = $null
+        [string] $ip2 = $null
+        do {
+            $ip1 = $null
+            $ip2 = $null
 
-        $ip1 = Resolve-PhotonEndpoint $photonEndpoint $retries $waitInSeconds
-        Start-Sleep $waitInSeconds
-        $ip2 = Resolve-PhotonEndpoint $photonEndpoint $retries $waitInSeconds
+            $ip1 = Resolve-PhotonEndpoint $photonEndpoint $cloudFlareNameserver $retries $waitInSeconds
+            Start-Sleep $waitInSeconds
+            $ip2 = Resolve-PhotonEndpoint $photonEndpoint $cloudFlareNameserver $retries $waitInSeconds
 
-        Write-Host "Resolved '$photonEndpoint' to '$ip1' and '$ip2'"
-    } while ([string]::IsNullOrEmpty($ip1) -or [string]::IsNullOrEmpty($ip2) -or ($ip1 -ne $ip2))
+            Write-Host "Resolved '$photonEndpoint' to '$ip1' and '$ip2'"
+        } while ([string]::IsNullOrEmpty($ip1) -or [string]::IsNullOrEmpty($ip2) -or ($ip1 -ne $ip2))
 
-    return $ip1
+        return $ip1
+    }
 }
 
 function Register-PerformanceCounters([bool] $registerPerformanceCounters)
