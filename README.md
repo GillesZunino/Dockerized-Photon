@@ -160,9 +160,11 @@ az deployment group create \
 For more information, refer to [Deploy to Azure Container Instances from Azure Container Registry](https://docs.microsoft.com/en-us/azure/container-instances/container-instances-using-azure-container-registry).
 
 # <a name="monitoring_photon"></a>Monitoring Photon
-Photon tracks server performance and statistics via [performance counters](https://doc.photonengine.com/en-us/server/current/performance/photon-counters). Applications can create their own performance counters (see [Implementing Custom Performance Counters](https://doc.photonengine.com/en-us/server/current/performance/photon-counters)).
+Photon tracks server performance and statistics via [performance counters](https://doc.photonengine.com/en-us/server/current/performance/photon-counters). Photon applications can create their own performance counters (see [Implementing Custom Performance Counters](https://doc.photonengine.com/en-us/server/current/performance/photon-counters)).
 
-By default, performance counters are only available in memory on the Photon server. Exit Games offers `CounterPublisher`, a mecanism to publish performance counters. CounterPublisher is extensible and can publish metrics via standard protocols (UDP, HTTP(s), PGM - see [Application Protocols](https://doc.photonengine.com/en-us/server/current/performance/photon-counters)) or to monitoring applications or services including:
+Performance counters are only available in memory on the Photon server. Exit Games provides `CounterPublisher`, a Photon application capable of publishing performance counters to databases, monitoring applications or services via standard protocols (UDP, HTTP(s), PGM - see [Application Protocols](https://doc.photonengine.com/en-us/server/current/performance/photon-counters)).
+
+`CounterPublisher` is extensible via plugins implementing Photon's `ICounterSampleWriter` interface. Implementations exists for various monitoring applications or services including:
 * [StatsD](https://github.com/etsy/statsd/) - see [Publishing to StatsD](https://doc.photonengine.com/en-us/server/current/performance/photon-counters),
 * [Graphite](https://graphite.wikidot.com/carbon) - see [Publishing to Graphite](https://doc.photonengine.com/en-us/server/current/performance/photon-counters),
 * [InfluxDB](https://www.influxdata.com/) - see [Publishing to InfluxDB](https://doc.photonengine.com/en-us/server/current/performance/photon-counters),
