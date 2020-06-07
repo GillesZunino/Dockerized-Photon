@@ -113,8 +113,7 @@ You will need an active Azure subscription and an [Azure Image Registry](https:/
         -containerRegistryServer <registry login server> `
         -containerRegistryUsername <registry user name> `
         -containerRegistryPassword <registry password> `
-        -cpuCount=2 `
-        -memoryGiB=2
+        -dnsLabel <dns name prefix>
     ```
     or [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest) :
     ```shell
@@ -125,7 +124,8 @@ You will need an active Azure subscription and an [Azure Image Registry](https:/
             imageTag=<registry login server>/gameserver/photon:1.0 \
             containerRegistryServer=<registry login server> \
             containerRegistryUsername=<registry user name> \
-            containerRegistryPassword=<registry password>
+            containerRegistryPassword=<registry password> \
+            dnsLabel=<dns name prefix>
     ```
     If the Container Instance Group exists, it is updated. Caution: all containers in the group are stopped first.
 
@@ -139,6 +139,7 @@ New-AzureRmResourceGroupDeployment `
     -containerRegistryServer <registry login server> `
     -containerRegistryUsername <registry user name> `
     -containerRegistryPassword <registry password> `
+    -dnsLabel <dns name prefix> `
     -cpuCount=2 `
     -memoryGiB=2
 ```
@@ -152,6 +153,7 @@ az deployment group create \
         containerRegistryServer=<registry login server> \
         containerRegistryUsername=<registry user name> \
         containerRegistryPassword=<registry password> \
+        dnsLabel=<dns name prefix> \
         cpuCount=2 \
         memoryGiB=2
 ```
