@@ -32,6 +32,18 @@ Exit Games currently provides two versions of Photon: a cloud-based service and 
 4. Make sure Docker for Windows is installed, setup for Windows Containers and running,
 5. (Optional) Configure Photon server performance and statistics monitoring - See [Monitoring Photon](#monitoring_photon) below.
 
+# Exposing the Photon containers to clients via `PHOTON_ENDPOINT`
+The Photon `LoadBalancing` application is comprised of two separate modules: `Master` and `GameServer`. There is typically one instance of `Master` running. It keeps track of games currently open on game servers and assigns players to game servers. One or more `GameServer` run game rooms and periodicaly report their usage back to `Master`. See [LoadBalancing Application](https://doc.exitgames.com/en-us/server/v4/applications/loadbalancing/application) for details.
+
+To join a game, a client first connects to the `Master` instance and obtains a list of games. `Master` determines the `GameServer` instance on which the game is running and returns its IP address to the client. The client disconnects from `Master` and connects to the IP address obtained from `Master`. This protocol requires `Master` to know the client accessible IP addresses of all `GameServer` available.
+
+This repo configures `LoadBalancing` with one `Master` instance and one `GameServer` instance, both running in the same container. The startup script expects the clients visible IP address of `GameServer` to be provided in variable `PHOTON_ENDPOINT`. There are several ways to provide this information:
+
+* Using an IP address, i.e. `PHOTON_ENDPOINT=10.1.1.1`. The script will configure `LoadBalancing` with the given IP address,
+* Using a fully qualified domain name, i.e. `PHOTON_ENDPOINT=photon1.domain.com`. The script will attempt to resolve the FDQN using DNS Server `1.1.1.1` and configure `LoadBalancing` with the first IP address found,
+* Using automatic detection, i.e. `PHOTON_ENDPOINT=`. The script will attempt to deduce the container's IP address seen from the internet by resolving `myip.opendns.com` using nameserver `resolver1.opendns.com`. Upon success it will configure `LoadBalancing` with the first IP address found,
+* Using `localhost`, i.e. `PHOTON_ENDPOINT=localhost`. The script will configure `LoadBalancing` with `127.0.0.1`.
+
 ## Building and running locally
 1. Open a Powershell window and cd into `<repo root>`
 2. Build and tag the image `photon:1.0` by running:
