@@ -44,33 +44,48 @@ This repo configures `LoadBalancing` with one `Master` instance and one `GameSer
 * Using automatic detection, i.e. `PHOTON_ENDPOINT=`. The script will attempt to deduce the container's IP address seen from the internet by resolving `myip.opendns.com` using nameserver `resolver1.opendns.com`. Upon success it will configure `LoadBalancing` with the first IP address found,
 * Using `localhost`, i.e. `PHOTON_ENDPOINT=localhost`. The script will configure `LoadBalancing` with `127.0.0.1`.
 
-## Building and running locally
+# Running the container on a desktop computer
 1. Open a Powershell window and cd into `<repo root>`
 2. Build and tag the image `photon:1.0` by running:
     ```powershell
     docker build -t photon:1.0 .
     ```
     Docker will pull Windows Server Core from the Microsoft Image Registry if needed (Windows Server Core 1809 - `mcr.microsoft.com/windows/servercore:1809`). This may take a while.
-3. Create a custom NAT Docker network to run Photon locally. This only needs to be done once:
+3. Determine the IP V4 address clients will use to connect to `GameServer`. This IP address is highly dependent on the network configuration of the Docker host.
+
+    Typically, clients run on different computers on the network and access Photon through one of the Docker host physical network interfaces. The following powershell command prints the IP addresses of all physical network interfaces currently up:
     ```powershell
-    docker network create --driver=nat --subnet=172.24.1.0/24 --gateway=172.24.1.1 photon-nat
-    ```
-4. Run the container locally:
-    ```powershell
-    docker run --rm --interactive --tty --network photon-nat --ip 172.24.1.20 -e PHOTON_ENDPOINT=172.24.1.20 -p 843:843/tcp -p 4530:4530/tcp -p 4531:4531/tcp -p 4533:4533/tcp -p 5055:5055/udp -p 5056:5056/udp -p 5058:5058/udp -p 6060:6060/tcp -p 6061:6061/tcp  -p 6063:6063/tcp -p 9090:9090/tcp -p 9091:9091/tcp -p 19090:19090/tcp -p 19091:19091/tcp -p 19093:19093/tcp photon:1.0
+    Get-NetAdapter -Physical | Where-Object { $_.Status -eq "Up" } | Get-NetIPAddress -AddressFamily IPv4
     ```
 
-    The image starts the standard `LoadBalancing` application. The Photon server is ready when the container displays the PID of `PhotonSocketServer` as follows:
+4. Run the container locally. You will need to substitute `<host ip address>` with the IP address selected in step 3.
+    ```powershell
+    docker run --rm --interactive --tty -e PHOTON_ENDPOINT=<host ip address> -p 843:843/tcp -p 4530:4530/tcp -p 4531:4531/tcp -p 4533:4533/tcp -p 5055:5055/udp -p 5056:5056/udp -p 5058:5058/udp -p 6060:6060/tcp -p 6061:6061/tcp  -p 6063:6063/tcp -p 9090:9090/tcp -p 9091:9091/tcp -p 19090:19090/tcp -p 19091:19091/tcp -p 19093:19093/tcp photon:1.0
     ```
-    DNS Name: 172.24.1.20
-    Public IP: 172.24.1.20
+
+    The container configures and starts the `LoadBalancing` application. The Photon server is ready when the container displays the PID of `PhotonSocketServer` as follows:
+    ```
+    PHOTON_ENDPOINT: <host ip address>
+    GameServer client accessible IP: <host ip address>
     Configuring Master (Photon.LoadBalancing.dll.config)
     Configuring GameServer (Photon.LoadBalancing.dll.config)
     Starting PhotonSocketServer
     PhotonSocketServer has PID '1976'
     Waiting for PhotonSocketServer to exit
     ```
-    Photon Server is now available at `172.24.1.20` (the value passed as `PHOTON_ENDPOINT`) and game clients can now connect.
+    Photon Server is now available at `<host ip address>` and game clients can connect.
+
+## Troubleshooting
+Sometimes, additional steps are required for clients to access the Photon container. In the vast majority of the cases, the issue is on the Docker host networking configuration (firewall, choice of `PHOTON_ENDPOINT`, ...) or the Docker network connected to the container. This section lists a few common symptoms, their possible causes and possible remedies.
+
+The first step is to observe how clients fail to connect. It is best done by temporarily configuring clients to "All" Network Logging and "Full" PUN Logging.
+
+#### Clients cannot connect to `Master`
+* Verify the firewall on the host is not blocking inbound traffic on Photon ports. Verify `PHOTON_ENDPOINT` is a host IP address and it is accessible from clients.
+* Verify that the Docker container is connected to a NAT network and `PHOTON_ENDPOINT` is correctly NAT'ed to the container.
+
+#### Clients connect to `Master`, get a `GameServer` IP and fail to connect to `GameServer`
+This is almost always because `PHOTON_ENDPOINT` is incorrect. `PHOTON_ENDPOINT` must be set to an IP address on the Docker host which clients can access.
 
 # Deploy to Azure Container Instance
 You will need an active Azure subscription and an [Azure Image Registry](https://docs.microsoft.com/en-us/azure/container-registry/container-registry-get-started-portal) instance. A "Basic" SKU is sufficient. The following steps assume Administrative User access has been enabled. You will need to substitute `<registry login server>`, `<registry user name>` and `<registry password>` with actual login information for your registry. These can be found under the "Access keys" blade in the Azure portal.
@@ -230,6 +245,4 @@ Configuring `CounterPublisher` is highly dependant on the protocol or the servic
 # Future work and known limitations
 
 * Guidance on how to collect Photon logs (possibly with Azure Log Analytics or Azure Application Insights)
-* Add a troubleshooting section
 * Consider describing configuration for HTTPS or WebSocket / Secure WebSocket.
-* Describe the automatic IP discovery and fallback to PHOTON_ENDPOINT.
