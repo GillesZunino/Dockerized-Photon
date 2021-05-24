@@ -12,8 +12,9 @@
 
 # Constants - Capture the location of various executables and files
 [bool] $enablePerformanceCounters = $true
-[string] $PhotonSocketServerDirectoryRelativePath = ".\deploy\bin_Win64"
-[string] $PhotonSocketServerExecutableName = "PhotonSocketServer"
+[string] $PhotonRoot = ".\deploy"
+[string] $PhotonSocketServerDirectoryRelativePath = ( Join-Path -Path $PhotonRoot -ChildPath "bin_Win64" )
+[string] $PhotonSocketServerExecutableName = "PhotonSocketServer.exe"
 
 # CloudFlare nameserver
 [string] $NameServer = "1.1.1.1"
@@ -102,33 +103,46 @@ function Get-PhotonPublicIp([string] $photonEndpoint)
     return $ip1
 }
 
-function Register-PerformanceCounters([bool] $registerPerformanceCounters)
+function Register-PerformanceCounters([bool] $registerPerformanceCounters, [Version] $photonVersion)
 {
     if ($registerPerformanceCounters) {
-        Write-Host "Registering performance counters"
-        $photonSocketServerProcess = Start-Process -FilePath $PhotonSocketServerExecutableRelativePath -ArgumentList "/installCounters" -WorkingDirectory $PhotonSocketServerDirectoryRelativePath -NoNewWindow -Wait -PassThru
-        [int] $photonExitCode = $photonSocketServerProcess.ExitCode
-        if ($photonExitCode -ne 0) {
-            throw "Failed to register performance counters - PhotonSocketServer exited - $photonExitCode"
+        if ($photonVersion.Major -eq 4) {
+            Write-Host "Registering performance counters"
+            $photonSocketServerProcess = Start-Process -FilePath $PhotonSocketServerExecutableRelativePath -ArgumentList "/installCounters" -WorkingDirectory $PhotonSocketServerDirectoryRelativePath -NoNewWindow -Wait -PassThru
+            [int] $photonExitCode = $photonSocketServerProcess.ExitCode
+            if ($photonExitCode -ne 0) {
+                throw "Failed to register performance counters - PhotonSocketServer exited - $photonExitCode"
+            }
+        } else {
+            Write-Host "Performance counter registration not yet supported for Photon v5"
         }
     } else {
         Write-Host "Skipping performance counters registration"
     }
 }
 
+function Get-PhotonVersion()
+{
+    [string] $photonSocketServerPath = Join-Path -Path $PhotonSocketServerDirectoryRelativePath -ChildPath $PhotonSocketServerExecutableName
+    return (Get-ChildItem $photonSocketServerPath).VersionInfo.FileVersion
+}
+
 ## ----------------------------------------------------------------------------------------------------------------------------
+$photonVersion = Get-PhotonVersion
+Write-Host "Photon Version: $photonVersion"
 
 [string] $endpoint = $Env:PHOTON_ENDPOINT
 Write-Host "PHOTON_ENDPOINT: $endpoint"
 
 [string] $loadBalancerPublicIP = Get-PhotonPublicIp $endpoint
 Write-Host "GameServer client accessible IP: $loadBalancerPublicIP"
+
 if (-not [string]::IsNullOrEmpty($loadBalancerPublicIP)) {
     Write-Host "Configuring LoadBalancing application"
-    Configure-LoadBalancingApp $loadBalancerPublicIP $enablePerformanceCounters
+    Configure-LoadBalancingApp $PhotonRoot $loadBalancerPublicIP $enablePerformanceCounters $photonVersion
 
     # Register Windows performance counters
-    Register-PerformanceCounters $enablePerformanceCounters
+    Register-PerformanceCounters $enablePerformanceCounters $photonVersion
 
     # Start PhotonSocketServer
     Write-Host "Starting PhotonSocketServer"
