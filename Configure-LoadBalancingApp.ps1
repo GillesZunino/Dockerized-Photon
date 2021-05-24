@@ -37,7 +37,7 @@ function Configure-LoadBalancingApp([string] $photonRoot, [string] $loadBalancer
             Update-LoadBalancingMasterV5Configuration ( Join-Path -Path $photonRoot -ChildPath "LoadBalancing\Master\bin\Master.xml.config") $false
 
             Write-Host "[LoadBalancing] Configuring GameServer (GameServer.xml.config)"
-            Update-LoadBalancingGameServerV5Configuration ( Join-Path -Path $photonRoot -ChildPath "LoadBalancing\GameServer\bin\GameServer.xml.config" ) $loadBalancerPublicIP $loadBalancerPublicIP $false
+            Update-LoadBalancingGameServerV5Configuration ( Join-Path -Path $photonRoot -ChildPath "LoadBalancing\GameServer\bin\GameServer.xml.config" ) $loadBalancerPublicIP "localhost" $false
         }
     }
 }
