@@ -9,10 +9,6 @@ Dockerfile
 # VS Code and tooling
 .vscode
 
-# Licensing and documentation
-LICENSE
-README.md
-
 # Azure Resource Manager artifacts
 Template
 
