@@ -14,6 +14,7 @@ WORKDIR C:\Photon
 #
 # Photon ports can be found here : https://doc.photonengine.com/en-us/realtime/current/connection-and-authentication/tcp-and-udp-port-numbers
 #
+# 4520            TCP   S2S GameServer to Master (TCP)
 # 4530            TCP	Client to Master Server (TCP)
 # 4531            TCP	Client to Game Server (TCP)
 # 4533	          TCP	Client to Nameserver (TCP)
@@ -29,6 +30,8 @@ WORKDIR C:\Photon
 #
 
 EXPOSE 843/tcp 4530/tcp 4531/tcp 4533/tcp 5055/udp 5056/udp 5058/udp 6060/tcp 6061/tcp 6063/tcp 9090/tcp 9091/tcp 9093/tcp 19090/tcp 19091/tcp 19093/tcp  
+
+EXPOSE 4520/tcp 
 
 ENV PHOTON_ENDPOINT localhost
 
