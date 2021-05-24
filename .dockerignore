@@ -1,14 +1,33 @@
+# git related files
 .git
 .gitignore
+
+# Docker related files
 Dockerfile
 .dockerignore
+
+# VS Code and tooling
+.vscode
+
+# Licensing and documentation
 LICENSE
 README.md
-*.exe
-.vscode
+
+# Azure Resource Manager artifacts
 Template
+
+# Binaries
+*.exe
+
+# Exclude Photon as a whole ... 
 Photon
+# ... and Cherry pick only what is needed
 !Photon/deploy/bin_Win64
-!Photon/deploy/CounterPublisher
-!Photon/deploy/Loadbalancing
+!Photon/deploy/LoadBalancing
+!Photon/deploy/NameServer
 !Photon/deploy/Policy
+!Photon/deploy/*.config
+!Photon/deploy/*.json
+
+# This is deprecated with Photon v5 - We still include it for Photon v4
+!Photon/deploy/CounterPublisher
