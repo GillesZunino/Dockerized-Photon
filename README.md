@@ -50,7 +50,7 @@ This repo configures `LoadBalancing` with one `Master` instance and one `GameSer
     ```powershell
     docker build -t photon:1.0 .
     ```
-    Docker will pull Windows Server Core from the Microsoft Image Registry if needed (Windows Server Core 1809 - `mcr.microsoft.com/windows/servercore:1809`). This may take a while.
+    Docker will pull Windows Server Core from the Microsoft Image Registry if needed (Windows Server Core 20H2 - `mcr.microsoft.com/windows/servercore:20H2`). This may take a while.
 3. Determine the IP V4 address clients will use to connect to `GameServer`. This IP address is highly dependent on the network configuration of the Docker host.
 
     Typically, clients run on different computers on the network and access Photon through one of the Docker host physical network interfaces. The following powershell command prints the IP addresses of all physical network interfaces currently up:
