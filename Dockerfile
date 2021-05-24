@@ -1,6 +1,8 @@
 #escape=`
 
-FROM mcr.microsoft.com/windows/servercore:20H2
+# List of available images is at https://hub.docker.com/_/microsoft-windows-servercore
+# List of images supported by Azure Container Instance is at https://docs.microsoft.com/en-us/azure/container-instances/container-instances-region-availability#:~:text=Linux%20container%20groups%20%20%20%20Region%20,%20%20V100%20%2020%20more%20rows%20
+FROM mcr.microsoft.com/windows/servercore:ltsc2019
 
 SHELL [ "powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'Continue'; $verbosePreference='Continue';" ]
 
